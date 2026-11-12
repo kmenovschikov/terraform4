@@ -52,41 +52,24 @@
 
     - Настройте backend в providers.tf с использованием нового механизма блокировок:
 
-> terraform {
->
-> required_version = "~\>1.12.0"
->
-> backend "s3" {
->
-> bucket = "ваш-bucket-name"
->
-> key = "terraform.tfstate"
->
-> region = "ru-central1"
->
-> \# Встроенный механизм блокировок (Terraform \>= 1.6)
->
-> \# Не требует отдельной базы данных!
->
-> use_lockfile = true
->
-> endpoints = {
->
-> s3 = "https://storage.yandexcloud.net"
->
-> }
->
-> skip_region_validation = true
->
-> skip_credentials_validation = true
->
-> skip_requesting_account_id = true
->
-> skip_s3_checksum = true
->
-> }
->
-> }
+```
+terraform {
+required_version = "~\>1.12.0"
+backend "s3" {
+bucket = "ваш-bucket-name"
+key = "terraform.tfstate"
+region = "ru-central1"
+\# Встроенный механизм блокировок (Terraform \>= 1.6)
+\# Не требует отдельной базы данных!
+use_lockfile = true
+endpoints = {
+s3 = "https://storage.yandexcloud.net" }
+skip_region_validation = true
+skip_credentials_validation = true
+skip_requesting_account_id = true
+skip_s3_checksum = true
+} }
+```
 
 - Выполните terraform init -migrate-state для миграции state в S3
 
@@ -160,8 +143,6 @@
 
 - Напишите переменные с валидацией и протестируйте их, заполнив default верными и неверными значениями. Предоставьте скриншоты проверок из terraform console.
 
-<!-- -->
-
 - type=string, description="ip-адрес" — проверка, что значение переменной содержит верный IP-адрес с помощью функций cidrhost() или regex(). Тесты: "192.168.0.1" и "1920.1680.0.1";
 
 - type=list(string), description="список ip-адресов" — проверка, что все адреса верны. Тесты: \["192.168.0.1", "1.1.1.1", "127.0.0.1"\] и \["192.168.0.1", "1.1.1.1", "1270.0.0.1"\].
@@ -172,6 +153,7 @@
 
 **Добавим в Variables.tf:**
 
+```
 \# 1. Валидация одного IP-адреса  
 variable "ip_address" {  
 type = string  
@@ -198,6 +180,7 @@ for ip in var.ip_addresses_list : can(cidrhost("\${ip}/32", 0))
 error_message = "Один или несколько IP-адресов в списке имеют неверный формат."  
 }  
 }
+```
 
 **Проверка корректных значений:**
 

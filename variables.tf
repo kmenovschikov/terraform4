@@ -1,4 +1,7 @@
-#variable "vms_ssh_root_key" {
-#  type        = string
-#  description = "SSH public key"
-#}
+variable "cloud_id" {
+  type        = string
+}
+
+variable "folder_id" {
+  type        = string
+}
